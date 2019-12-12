@@ -1,4 +1,6 @@
-<h1 mat-dialog-title>Hi {{data.valorBusqueda}}</h1>
+<mat-form-field>
+  <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter" value = {{data.valorBusqueda}}>
+</mat-form-field>
 <div>
   <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
     <!-- Position Column -->
@@ -8,11 +10,18 @@
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+        (click)="getRecordFromTable(row)"
+        [ngClass]="{hovered: row.hovered, highlighted: row.highlighted}"
+        (click)="row.highlighted = !row.highlighted"
+        (mouseover)="row.hovered = true"
+        (mouseout)="row.hovered = false"
+    ></tr>
   </table>
+  <mat-paginator #paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
 </div>
 
 <div mat-dialog-actions>
-  <button mat-button (click)="onNoClick()">No Thanks</button>
-  <button mat-button [mat-dialog-close]="data.animal" cdkFocusInitial>Ok</button>
+  <button mat-button (click)="onNoClick()">Cancelar</button>
+  <button mat-button [mat-dialog-close]="data.retorno" cdkFocusInitial>Aceptar</button>
 </div>

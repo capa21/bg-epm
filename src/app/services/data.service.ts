@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -15,7 +16,8 @@ const httpOptions = {
 };
 
 const bodyPeticion = {
-  Instancia: 'ConectorCrm_ComercialDllo',
+  //Instancia: 'ConectorCrm_ComercialDllo',
+  Instancia: 'ConectorCrm_MatrizDllo',
   FetchXml: '<fetch version=\'1.0\' output-format=\'xml-platform\' mapping=\'logical\' distinct=\'false\'><entity name=\'contact\'><attribute name=\'fullname\' /><attribute name=\'epm_clidentificationnumber\' /><attribute name=\'contactid\' /><filter type=\'and\'><condition attribute=\'fullname\' operator=\'like\' value=\'%1%\' /></filter></entity></fetch>'
 }
 
@@ -33,17 +35,20 @@ interface DataType {
 @Injectable()
 export class DataService {
 
-  url = 'https://epmapimdes.azure-api.net:443/ConectorCrm/api/Consultar';
+  //url = 'https://epmapimdes.azure-api.net/ConectorCrm/api/Consultar';
+  url = 'bgepm';
 
   constructor(
     private http: HttpClient
   ) { }
 
-  // getData(): Observable<any> {
-  //   return this.http.post<any>(this.url, bodyPeticion, httpOptions);
-  // }
+  getData(): Observable<DataType> {
+    console.log("entro a llamar al ws");
+    console.log("url", this.url);
+    return this.http.post<DataType>(this.url, bodyPeticion, httpOptions);
+  }
 
-  getData(): DataType {
+  getData_datosquemados(): DataType {
     return {
       "Respuesta": [
           {
@@ -1286,13 +1291,4 @@ export class DataService {
       Error: null
     }
   }
-
-  getDataFiltrada(): any[]  {
-    let arrayAttributes: any[] = [];
-    this.getData().Respuesta.forEach(element => {
-      arrayAttributes.push(element.Attributes);
-    });
-    return arrayAttributes;
-  }
-
 }

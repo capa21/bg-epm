@@ -1,0 +1,19 @@
+{
+  "/bgepm": {
+      "target": "https://epmapimdes.azure-api.net/ConectorCrm/api/Consultar",
+      "secure": false,
+      "logLevel": "debug",
+      "changeOrigin": true,
+      "headers": {
+                  "Content-Type":  "application/x-www-form-urlencoded",
+                  "Accept": "application/json",
+                  "OData-Version": "4.0",
+                  "OData-MaxVersion": "4.0",
+                  "Ocp-Apim-Subscription-Key": "30462a9d27c6451e82eab03dcc422ca9"
+                  },
+      "body": {
+        "Instancia": "ConectorCrm_MatrizDllo",
+        "FetchXml": "<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='false'><entity name='contact'><attribute name='fullname' /><attribute name='epm_clidentificationnumber' /><attribute name='contactid' /><filter type='and'><condition attribute='fullname' operator='like' value='%1%' /></filter></entity></fetch>"
+      }
+  }
+}

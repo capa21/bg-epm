@@ -15,10 +15,9 @@ export class FiltroComponent implements OnInit {
   arrayNombresCampos: string[] = [];
   arrayNumeroCamposAtributos: number[] = [];
   valorBusqueda = '';
-  idSeleccionado = '';
+  registroSeleccionado = '';
 
-
-  attributes = [
+  attributes_datosquemados = [
     {
       fullname: {
         Value: 'Prueba11 Praa'
@@ -84,6 +83,8 @@ export class FiltroComponent implements OnInit {
     }
   ];
 
+  attributes: any[] = [];
+
   constructor(
     private dataservice: DataService,
     public dialog: MatDialog
@@ -91,40 +92,53 @@ export class FiltroComponent implements OnInit {
 
   ngOnInit() {
     //this.getData();
-    this.pruebaData();
+    //this.pruebaData();
   }
 
-  getData() {
-    const arrayAtributos = this.dataservice.getDataFiltrada();
-    arrayAtributos.forEach(element => {
-      const atributo = {};
-      this.arrayNombresCampos.forEach(item => {
-        console.log("element", element);
-        console.log("item",item);
-        console.log(eval(`element.${item}.Value`));
-        //atributo[item] = eval(`atributoElement.${item}.Value`);
-      });
-      this.arrayData.push(atributo);
-    });
-    console.log(this.arrayData);
-
+  getData_quemado() {
+    //const arrayAtributos = this.dataservice.getDataFiltrada();
   }
 
   openDialog(): void {
     const dialogRef = this.dialog.open(ModalComponent, {
       width: '50%',
-      data: {valorBusqueda: this.valorBusqueda, dataTable: this.arrayData, nombresCampos: this.arrayNombresCampos,  animal: this.idSeleccionado}
+      // tslint:disable-next-line: max-line-length
+      data: {valorBusqueda: this.valorBusqueda, dataTable: this.arrayData, nombresCampos: this.arrayNombresCampos,  retorno: this.registroSeleccionado}
     });
 
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
-      this.idSeleccionado = result;
+      this.registroSeleccionado = result;
+      console.log(this.registroSeleccionado);
     });
   }
 
-  pruebaData() {
+  getData() {
     const arrayAtributos: object[] = [];
-    this.attributes.forEach(element => {
+    // tslint:disable-next-line: max-line-length
+    // hacer llamado al servicio y suscribirse. Si hay datos de resultado entonces filtrarla, si no entonces no hacer nada o mandar mensaje a consola
+    this.dataservice.getData()
+    .subscribe(
+      respuesta => {
+        console.log("respuesta", respuesta);
+        this.attributes = this.getDataFiltrada(respuesta);
+        this.obtenerNodoAttributes(this.attributes);
+    },
+    error => {
+      console.log(error);
+    })
+  }
+
+  getDataFiltrada(respuesta): any[]  {
+    const arrayAttributes: any[] = [];
+    respuesta.Respuesta.forEach(element => {
+        arrayAttributes.push(element.Attributes);
+    });
+    return arrayAttributes;
+  }
+
+  obtenerNodoAttributes(arrayAtributtes: any[]) {
+    arrayAtributtes.forEach(element => {
       const nombresCampos = Object.keys(element);
       this.arrayNumeroCamposAtributos.push(Object.keys(element).length);
       const atributo = {};
@@ -132,9 +146,8 @@ export class FiltroComponent implements OnInit {
       nombresCampos.forEach(item => {
         atributo[item] = eval(`element.${item}.Value`);
       });
-      arrayAtributos.push(atributo);
+      this.arrayData.push(atributo);
     });
-    this.arrayData = arrayAtributos;
     console.log("arrayNumeroCamposAtributos", this.arrayNumeroCamposAtributos);
     this.arrayNombresCampos = this.obtenerArrayNombresCampos();
     console.log("this.arrayNombresCampos", this.arrayNombresCampos);

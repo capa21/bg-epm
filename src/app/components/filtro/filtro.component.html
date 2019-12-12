@@ -1,15 +1,8 @@
 <div>
   <mat-form-field>
-    <input matInput [(ngModel)]="valorBusqueda" placeholder="What's your name?">
+    <input matInput [(ngModel)]="valorBusqueda">
   </mat-form-field>
 </div>
 <div>
-  <button mat-raised-button (click)="openDialog()">Pick one</button>
+  <button mat-raised-button (click)="getData()">Buscar</button>
 </div>
-
-<h1>Hola Leicer !!! ¿Estás bien  ?</h1>
-
-<h4 *ngIf="idSeleccionado">
-  You chose: <i>{{idSeleccionado}}</i>
-</h4>
-
